@@ -15,7 +15,7 @@ const options = {
 
 const connectWithRetry = () => {
     console.log('MongoDB connection with retry')
-    mongoose.connect("mongodb+srv://kur1505:975OVUGR61lL58Xq@cluster0-1rzg1.azure.mongodb.net/loginApi?retryWrites=true", options).then(()=>{
+    mongoose.connect("mongodb+srv://kur1505:975OVUGR61lL58Xq@cluster0-1rzg1.azure.mongodb.net/casino?retryWrites=true", options).then(()=>{
         console.log('MongoDB is connected')
     }).catch(err=>{
         console.log('MongoDB connection unsuccessful, retry after 5 seconds. ', ++count);
