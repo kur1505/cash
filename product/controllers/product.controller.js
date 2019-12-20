@@ -1,0 +1,77 @@
+const ProductModel = require('../models/product.model');
+const fs = require('fs');
+exports.insert = (req, res) => {
+    
+    var file = req.files.ProductImage;
+    var images={imgdata: Buffer, contentType: String};
+    fs.readFile(file.path,(err,data)=>{
+        images.img=data;
+        images.contentType=file.mimetype;
+    });
+    req.body.images=images;
+    req.body.createddate = new Date();
+    ProductModel.createProduct(req.body)
+        .then((result) => {
+            res.status(201).send({Success:true,Message:"Reading Add Successfully",id: result._id});
+        });
+};
+
+exports.list = (req, res) => {
+    let limit = req.query.limit && req.query.limit <= 100 ? parseInt(req.query.limit) : 10;
+    let page = 0;
+    if (req.query) {
+        if (req.query.page) {
+            req.query.page = parseInt(req.query.page);
+            page = Number.isInteger(req.query.page) ? req.query.page : 0;
+        }
+    }
+    ProductModel.list(limit, page)
+        .then((result) => {
+            res.status(200).send(result);
+        })
+};
+exports.listdash = (req, res) => {
+    let limit = req.query.limit && req.query.limit <= 100 ? parseInt(req.query.limit) : 10;
+    let page = 0;
+    if (req.query) {
+        if (req.query.page) {
+            req.query.page = parseInt(req.query.page);
+            page = Number.isInteger(req.query.page) ? req.query.page : 0;
+        }
+    }
+    ProductModel.listdash(limit, page)
+        .then((result) => {
+            res.status(200).send(result);
+        })
+};
+
+exports.getById = (req, res) => {
+    ProductModel.findById(req.params.productId)
+        .then((result) => {
+            res.status(200).send(result);
+        });
+};
+exports.getByMachineNo = (req, res) => {
+    var machineNo = req.query.machineNo;
+    ProductModel.findBymachineNo(machineNo)
+        .then((result) => {
+            res.status(200).send(result);
+        });
+};
+exports.patchById = (req, res) => {
+    
+    ProductModel.patchProduct(req.params.productId, req.body)
+        .then((result) => {
+            res.status(204).send({});
+        });
+
+};
+
+exports.removeById = (req, res) => {
+    console.log(req);
+    ProductModel.removeById(req.params.productId)
+        .then((result)=>{
+            console.log(result);
+            res.status(201).send({Success:true,Message:"Delete Sucessfully"});
+        });
+};

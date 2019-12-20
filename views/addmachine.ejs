@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login V14</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+<!--===============================================================================================-->
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+    <a class="navbar-brand" href="#">Casino</a>
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item active">
+        <a class="nav-link" href="/dashboard">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/addreading" active>Add Reading</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" active>Add Machine</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+      </li>
+    </ul>
+     <ul class="navbar-nav navbar-right">
+      <li Class="pr-2"><span class="fa fa-user"></span> Kuldeep</li>|
+      <li Class="pl-2"><a href="#" onclick="logout();"><span class="fa fa-sign-out"></span>Logout</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="limiter" id="signup">
+    <div class="container-login100">
+        <div class="wrap-login100 p-l-85 p-r-85 p-t-55 p-b-55">
+            <form class="login100-form validate-form flex-sb flex-w">
+                <span class="login100-form-title p-b-32">
+                    Add Machine
+                </span>
+               
+               
+                
+                <div class="wrap-input100 validate-input m-b-12" data-validate = "Machine Name is required">
+                    <input class="input100" type="text" id="txtmachinename" name="MachineName" placeholder="Machine Name">
+                    <span class="focus-input100"></span>
+                </div>
+               
+               
+                <div class="row container-login100-form-btn">
+                <div class="col-md-12">
+                    <button class="login100-form-btn" value="Save" onclick="Addmachine(); return false;">Save</button>
+                </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="container-login100">
+        
+        <div class="wrap-login100 " style="width: 100%;">
+        <div class="bg-primary p-t-10 p-l-15 p-b-10 text-light"> <h3>Machine Dasboard</h3></div>
+        <div class="p-l-85 p-r-85 p-t-15 p-b-15">
+            <table id="example" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr>
+            <th>Machine No.</th>
+            <th>Machine Name</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id='dashTbodyMachine'>
+      
+        
+    </tbody>
+</table>
+        </div>
+        
+        </div>
+    </div>
+</div>
+	
+	
+<!--===============================================================================================-->
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/daterangepicker/moment.min.js"></script>
+	<script src="vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+<script src="js/main.js"></script>
+<script src="js/utility.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+<script src="js/login.js"></script>
+<script src="js/machine.js"></script>
+	<script>
+        $(document).ready(function(){
+          header={'authorization':'Bearer '+getCookie('access_token')}
+          _dashsuccess=function(dashRes){
+              var str="";
+                    if(dashRes.length>0){
+                        for(i=0;i<dashRes.length;i++){
+                            str+="<tr><td>"+dashRes[i].id+"</td><td>"+dashRes[i].machineName+"</td>";
+                            str+="<td><i class='fa fa-edit' aria-hidden='true'></i><i class='fa fa-remove' aria-hidden='true' onclick=deleteMachine('"+dashRes[i].id+"')></i></td></tr>";
+                        }
+                        $('#dashTbodyMachine').html(str);
+                    }
+                }
+                _dasherror = function (dasherror) {
+                    console.log(dasherror);
+            
+                }
+                callAjaxJsonGet('GET','/machine','',_dashsuccess,_dasherror,false,header);
+        });
+		$(function() {
+  $('input[name="datetime"]').daterangepicker({
+    singleDatePicker: true,
+    showDropdowns: true,
+	timePicker:true,
+	locale: {
+        format: 'MM/DD/YYYY hh:mm:ss A'
+    }
+  });
+})
+	</script>
+
+</body>
+</html>
