@@ -53,7 +53,7 @@
             </ul>
             <ul class="navbar-nav navbar-right">
                 <li Class="pr-2"><span class="fa fa-user"></span> Kuldeep</li>|
-                <li Class="pl-2"><a href="#" onclick="logout();"><span class="fa fa-sign-out"></span>Logout</a></li>
+                <li Class="pl-2"><a href="#" onclick="logout();"><span class="fa fa-sign-out"></span>Logout</a></li>F
             </ul>
         </div>
     </nav>
@@ -79,7 +79,7 @@
                     </div>
 
                     <div class="wrap-input100 validate-input m-b-12" data-validate="Current Reading is required">
-                        <input class="input100" type="text" id="txtcurrentreading" name="CurrentReading"
+                        <input class="input100" type="text" pattern="[0-9]" id="txtcurrentreading" name="CurrentReading"
                             placeholder="Current Reading">
                         <span class="focus-input100"></span>
                     </div>
@@ -174,8 +174,18 @@
                     format: 'MM/DD/YYYY hh:mm:ss A'
                 }
             });
-            $('#txtcurrentreading').keypress(function(res){
-                console.log(res);
+            $('#txtcurrentreading').keyup(function () {
+                if (!!$('#drpMachineNo').val()) {
+                    var prR = $('#txtprevreading').val();
+                    var fT = parseInt(this.value) - parseInt(prR);
+                    $('#txttotalbalance').val(fT);
+                }
+                else {
+                    this.value=null;
+                    swal.fire('Information',"Please select Machine",'info');
+                    return false;
+                }
+
             });
         })
     </script>
