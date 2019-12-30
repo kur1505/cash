@@ -1,20 +1,17 @@
 function CreateUser() {
     _success = function (res) {
         console.log(res);
-        if (!!res) {
-            Swal.fire('Success!', 'You are register Successfully', 'success').then((result) => {
+        if (res.Success) {
+            Swal.fire('Success!', res.Message, 'success').then((result) => {
                 if (result.value) {
                     window.location = "/";
                 }
             });
         }
-		else{
-			Swal.fire('Error!', 'Please Try Again', 'error');
-		}
     }
     _error = function (error) {
         console.log(error);
-Swal.fire('Error!', 'Please Try Again', 'error');
+
     }
     var req = new Object();
     req.Name = $('#regName').val();
@@ -40,13 +37,10 @@ function Login() {
                 
             }
         }
-		else{
-			Swal.fire('Error!', 'Please Try Again', 'error');
-		}
     }
     _error = function (error) {
         console.log(error);
-Swal.fire('Error!', 'Please Try Again', 'error');
+
     }
     var req = new Object();
     req.email = $('#username').val();

@@ -39,7 +39,7 @@
       <a class="navbar-brand" href="#">Casino</a>
       <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
         <li class="nav-item active">
-          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="/dashboard">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/addreading">Add Reading</a>
@@ -48,7 +48,7 @@
           <a class="nav-link" href="/addmachine" active>Add Machine</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/alldetails" tabindex="-1" aria-disabled="true">All Details</a>
+          <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">All Details</a>
         </li>
       </ul>
       <ul class="navbar-nav navbar-right">
@@ -64,17 +64,17 @@
 
       <div class="wrap-login100 " style="width: 100%;">
         <div class="bg-primary p-t-10 p-l-15 p-b-10 text-light">
-          <h3>Dasboard</h3>
+          <h3>All Details</h3>
         </div>
         <div class="p-l-85 p-r-85 p-t-15 p-b-15">
           <table id="example" class="table table-striped table-bordered" style="width:100%">
             <thead>
               <tr>
                 <th>Machine No.</th>
-                <th>Balance DateWise (Today)</th>
-                <th>Balance DateWise(Yesterday)</th>
-                <th>Balance DateWise (Day Before Yesterday)</th>
-                <th>Balance Total(Machine Wise)</th>
+                <th>Date(YYYY/MM/DD)</th>
+                <th>Current Reading</th>
+                <th>Previous Reading</th>
+                <th>Balance Total</th>
 
               </tr>
             </thead>
@@ -123,7 +123,6 @@
             </tbody>
             <tfoot>
               <tr>
-
                 <th colspan="4" class="text-right">Total</th>
                 <th id="mainTotal">5000</th>
               </tr>
@@ -158,63 +157,29 @@
   <script src="js/login.js"></script>
   <script>
     $(document).ready(function () {
-      debugger;
+      
+      var mainTotal = 0;
+      var tbody = "";
       header = { 'authorization': 'Bearer ' + getCookie('access_token') }
       _dashsuccess = function (dashRes) {
-        var mId = new Array();
-            var balTotal = 0;
-            var mainTotal = 0;
-            var tbody = "";
-            var dateArray = new Array();
-            $today = new Date();
-            $yesterday = new Date($today);
-            $dbyesterday = new Date($today);
-            $yesterday.setDate($today.getDate() - 1);
-            $dbyesterday.setDate($today.getDate() - 2);
-            var counter = 0;
-            var counterinserttime = 0;
-            dateArray.push($today.getFullYear()+"-"+($today.getMonth() + 1)+"-"+$today.getDate());
-            dateArray.push($yesterday.getFullYear()+"-"+($yesterday.getMonth() + 1)+"-"+$yesterday.getDate());
-            dateArray.push($dbyesterday.getFullYear()+"-"+($dbyesterday.getMonth() + 1)+"-"+$dbyesterday.getDate());
-            debugger;
-            dashRes.forEach(function (rest) {
-                if (!mId.includes(rest._id.mId))
-                    mId.push([rest._id.mId,rest._id.mName[0]])
-            });
-            console.log(dashRes);
-            mId.forEach(function (data) {
-                tbody += "<tr>";
-                tbody += "<td>" + data[1] + "</td>";
-                for (j = 0; j < dateArray.length; j++) {
-                    for (i = 0; i < dashRes.length; i++) {
-                        if (data[0] == dashRes[i]._id.mId) {
-                            var temp = dashRes[i]._id.dateTime.split('T')[0];
-                            if (dateArray[j] == temp) {
-                                counter = 1;
-                                tbody += "<td>" + dashRes[i].sumtotal + "</td>";
-                                balTotal = balTotal + parseInt(dashRes[i].sumtotal);
-                            }
-                        }
-                    }
-                    if (counter == 0) {
-                        tbody += "<td>0</td>";
-                        balTotal = balTotal + 0;
-                    }
-
-                    counter = 0;
-                };
-                tbody += "<td>" + balTotal+ "</td></tr>";
-                mainTotal=mainTotal+balTotal;
-                balTotal=0;
-            }); 
-            $('#dashTbody').html(tbody);
-            $('#mainTotal').html(mainTotal);
+        for (i = 0; i < dashRes.length; i++) {
+          tbody += "<tr>";
+          tbody += "<td>" + dashRes[i].mName[0].machineName + "</td>";
+          tbody += "<td>" + dashRes[i].dateTime.split('T')[0] + "</td>";
+          tbody += "<td>" + dashRes[i].currentReading + "</td>";
+          tbody += "<td>" + dashRes[i].previousReading + "</td>";
+          tbody += "<td>" + dashRes[i].total + "</td></tr>";
+          mainTotal = mainTotal + dashRes[i].total;
+          
+        }
+        $('#dashTbody').html(tbody);
+        $('#mainTotal').html(mainTotal);
       }
       _dasherror = function (dasherror) {
         console.log(dasherror);
 
       }
-      callAjaxJsonGet('GET', '/productDash', '', _dashsuccess, _dasherror, false, header);
+      callAjaxJsonGet('GET', '/product', '', _dashsuccess, _dasherror, false, header);
     });
     $(function () {
       $('input[name="datetime"]').daterangepicker({
