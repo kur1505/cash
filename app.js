@@ -37,6 +37,9 @@ app.get('/addreading',function(req,res){
 app.get('/addmachine',function(req,res){
     res.render('addmachine');
 });
+app.get('/alldetails',function(req,res){
+    res.render('alldetails');
+});
 app.use(bodyParser.json());
 AuthorizationRouter.routesConfig(app);
 UsersRouter.routesConfig(app);
