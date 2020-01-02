@@ -181,16 +181,16 @@
             // dateArray.push($dbyesterday.getFullYear()+"-"+($dbyesterday.getMonth() + 1)+"-"+$dbyesterday.getDate());
             debugger;
             dashRes.forEach(function (rest) {
-                if (!mId.includes(rest._id.mId))
-                    mId.push([rest._id.mId,rest._id.mName[0]])
+                if (!mId.includes(rest._id.mName[0]))
+                    mId.push(rest._id.mName[0])
             });
             console.log(dashRes);
             mId.forEach(function (data) {
                 tbody += "<tr>";
-                tbody += "<td>" + data[1] + "</td>";
+                tbody += "<td>" + data + "</td>";
                 for (j = 0; j < dateArray.length; j++) {
                     for (i = 0; i < dashRes.length; i++) {
-                        if (data[0] == dashRes[i]._id.mId) {
+                        if (data == dashRes[i]._id.mName[0]) {
                             var temp = dashRes[i]._id.dateTime.split('T')[0];
                             if (dateArray[j] == temp) {
                                 counter = 1;
