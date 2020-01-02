@@ -208,5 +208,5 @@ function formatDateToString(date){
     var yyyy = date.getFullYear();
  
     // create the format you want
-    return (dd + "-" + MM + "-" + yyyy);
+    return (yyyy + "-" + MM + "-" + dd );
  }

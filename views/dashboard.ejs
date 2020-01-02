@@ -176,6 +176,9 @@
             dateArray.push(formatDateToString($today));
             dateArray.push(formatDateToString($yesterday));
             dateArray.push(formatDateToString($dbyesterday));
+            // dateArray.push($today.getFullYear()+"-"+($today.getMonth() + 1)+"-"+$today.getDate());
+            // dateArray.push($yesterday.getFullYear()+"-"+($yesterday.getMonth() + 1)+"-"+$yesterday.getDate());
+            // dateArray.push($dbyesterday.getFullYear()+"-"+($dbyesterday.getMonth() + 1)+"-"+$dbyesterday.getDate());
             debugger;
             dashRes.forEach(function (rest) {
                 if (!mId.includes(rest._id.mId))
