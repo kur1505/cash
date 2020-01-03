@@ -45,9 +45,22 @@ exports.createProduct = (productData) => {
     return product.save();
 };
 
-exports.list = (perPage, page) => {
+exports.list = () => {
     return new Promise((resolve, reject) => {
         Product.aggregate([{ $lookup: {from: "machines",localField: "machineNo",foreignField: "_id",as: "mName"}}]).sort({ dateTime: -1 })
+            .exec(function (err, products) {
+                if (err) {
+                    reject(err);
+                } else {
+
+                    resolve(products);
+                }
+            })
+    });
+};
+exports.alllist = (machineNo) => {
+    return new Promise((resolve, reject) => {
+        Product.aggregate([{$match:{'machineNo': mongoose.Types.ObjectId(machineNo)}},{ $lookup: {from: "machines",localField: "machineNo",foreignField: "_id",as: "mName"}}]).sort({ dateTime: -1 })
             .exec(function (err, products) {
                 if (err) {
                     reject(err);

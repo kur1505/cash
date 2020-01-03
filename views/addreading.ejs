@@ -26,6 +26,8 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="css/util.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
     <!--===============================================================================================-->
 </head>
 
@@ -53,7 +55,7 @@
             </ul>
             <ul class="navbar-nav navbar-right">
                 <li Class="pr-2"><span class="fa fa-user"></span></li>|
-                <li Class="pl-2"><a href="#" onclick="logout();"><span class="fa fa-sign-out"></span>Logout</a></li>F
+                <li Class="pl-2"><a href="#" onclick="logout();"><span class="fa fa-sign-out"></span>Logout</a></li>
             </ul>
         </div>
     </nav>
@@ -93,14 +95,14 @@
                             placeholder="Total Balance" disabled>
                         <span class="focus-input100"></span>
                     </div>
-                    <div class="input-group m-b-48">
+                    <!-- <div class="input-group m-b-48">
                         <span class="input-group-btn">
                             <span class="btn btn-default btn-file">
                                 Browse… <input type="file" id="imgInp">
                             </span>
                         </span>
                         <input type="text" class="form-control" readonly>
-                    </div>
+                    </div> -->
                     <!-- <div class="row p-b-48" style="width:100%"> -->
                     <!-- <div class="col-lg-8"> -->
                     <!-- <h4>Total Balance:</h4> -->
@@ -142,36 +144,22 @@
     <script src="vendor/daterangepicker/daterangepicker.js"></script>
     <!--===============================================================================================-->
     <script src="vendor/countdowntime/countdowntime.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <!--===============================================================================================-->
     <script src="js/main.js"></script>
     <script src="js/utility.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <script src="js/login.js"></script>
     <script src="js/machine.js"></script>
     <script>
         $(document).ready(function () {
-            header = { 'authorization': 'Bearer ' + getCookie('access_token') }
-            _dashsuccess = function (dashRes) {
-                console.log(dashRes);
-                var str = "<option value='0' disabled selected value>Select Machine</option>";
-                for (i = 0; i < dashRes.length; i++) {
-                    str += " <option value=" + dashRes[i].id + ">" + dashRes[i].machineName + "</option>"
-                }
-                $('#drpMachineNo').html(str);
-            }
-            _dasherror = function (dasherror) {
-                console.log(dasherror);
-
-            }
-            callAjaxJsonGet('GET', '/machine', '', _dashsuccess, _dasherror, false, header);
+            getmachinelist();
         });
         $(function () {
             $('input[name="datetime"]').daterangepicker({
-                singleDatePicker: true,
                 showDropdowns: true,
-                timePicker: true,
                 locale: {
-                    format: 'MM/DD/YYYY hh:mm:ss A'
+                    format: 'MM/DD/YYYY'
                 }
             });
             $('#txtcurrentreading').keyup(function () {

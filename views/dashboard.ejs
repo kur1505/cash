@@ -26,6 +26,7 @@
   <!--===============================================================================================-->
   <link rel="stylesheet" type="text/css" href="css/util.css">
   <link rel="stylesheet" type="text/css" href="css/main.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
   <!--===============================================================================================-->
 </head>
 
@@ -67,16 +68,9 @@
           <h3>Dasboard</h3>
         </div>
         <div class="p-l-85 p-r-85 p-t-15 p-b-15">
-          <table id="example" class="table table-striped table-bordered" style="width:100%">
-            <thead>
-              <tr>
-                <th>Machine No.</th>
-                <th>Balance DateWise (Today)</th>
-                <th>Balance DateWise(Yesterday)</th>
-                <th>Balance DateWise (Day Before Yesterday)</th>
-                <th>Balance Total(Machine Wise)</th>
+          <table id="dashTable" class="table table-striped table-bordered" style="width:100%">
+            <thead id="dashThead">
 
-              </tr>
             </thead>
             <tbody id='dashTbody'>
               <!-- <tr>
@@ -130,8 +124,8 @@
             </tfoot>
           </table>
         </div>
-        <div class="p-r-85 p-b-10 text-right"> <button type="button" class="btn btn-info" onclick="printDiv('signup')"><i class="fa fa-print"
-              aria-hidden="true"></i>Print</button></div>
+        <div class="p-r-85 p-b-10 text-right"> <button type="button" class="btn btn-info"
+            onclick="printDiv('signup')"><i class="fa fa-print" aria-hidden="true"></i>Print</button></div>
       </div>
     </div>
   </div>
@@ -151,10 +145,13 @@
   <script src="vendor/daterangepicker/daterangepicker.js"></script>
   <!--===============================================================================================-->
   <script src="vendor/countdowntime/countdowntime.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
   <!--===============================================================================================-->
   <script src="js/main.js"></script>
   <script src="js/utility.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
   <script src="js/login.js"></script>
   <script>
     $(document).ready(function () {
@@ -162,56 +159,65 @@
       header = { 'authorization': 'Bearer ' + getCookie('access_token') }
       _dashsuccess = function (dashRes) {
         var mId = new Array();
-            var balTotal = 0;
-            var mainTotal = 0;
-            var tbody = "";
-            var dateArray = new Array();
-            $today = new Date();
-            $yesterday = new Date($today);
-            $dbyesterday = new Date($today);
-            $yesterday.setDate($today.getDate() - 1);
-            $dbyesterday.setDate($today.getDate() - 2);
-            var counter = 0;
-            var counterinserttime = 0;
-            dateArray.push(formatDateToString($today));
-            dateArray.push(formatDateToString($yesterday));
-            dateArray.push(formatDateToString($dbyesterday));
-            // dateArray.push($today.getFullYear()+"-"+($today.getMonth() + 1)+"-"+$today.getDate());
-            // dateArray.push($yesterday.getFullYear()+"-"+($yesterday.getMonth() + 1)+"-"+$yesterday.getDate());
-            // dateArray.push($dbyesterday.getFullYear()+"-"+($dbyesterday.getMonth() + 1)+"-"+$dbyesterday.getDate());
-            debugger;
-            dashRes.forEach(function (rest) {
-                if (!mId.includes(rest._id.mName[0]))
-                    mId.push(rest._id.mName[0])
-            });
-            console.log(dashRes);
-            mId.forEach(function (data) {
-                tbody += "<tr>";
-                tbody += "<td>" + data + "</td>";
-                for (j = 0; j < dateArray.length; j++) {
-                    for (i = 0; i < dashRes.length; i++) {
-                        if (data == dashRes[i]._id.mName[0]) {
-                            var temp = dashRes[i]._id.dateTime.split('T')[0];
-                            if (dateArray[j] == temp) {
-                                counter = 1;
-                                tbody += "<td>" + dashRes[i].sumtotal + "</td>";
-                                balTotal = balTotal + parseInt(dashRes[i].sumtotal);
-                            }
-                        }
-                    }
-                    if (counter == 0) {
-                        tbody += "<td>0</td>";
-                        balTotal = balTotal + 0;
-                    }
+        var balTotal = 0;
+        var mainTotal = 0;
+        var tbody = "";
+        var thead = "";
+        var dateArray = new Array();
+        $today = new Date();
+        $yesterday = new Date($today);
+        $dbyesterday = new Date($today);
+        $yesterday.setDate($today.getDate() - 1);
+        $dbyesterday.setDate($today.getDate() - 2);
+        var counter = 0;
+        var counterinserttime = 0;
+        dateArray.push(formatDateToString($today));
+        dateArray.push(formatDateToString($yesterday));
+        dateArray.push(formatDateToString($dbyesterday));
+        thead += "<tr><th>Machine No.</th>";
+        thead += "<th>Balance DateWise (" + dateArray[0] + ")</th>";
+        thead += "<th>Balance DateWise (" + dateArray[1] + ")</th>";
+        thead += "<th>Balance DateWise (" + dateArray[2] + ")</th><th>Total</th></tr>";
+        // dateArray.push($today.getFullYear()+"-"+($today.getMonth() + 1)+"-"+$today.getDate());
+        // dateArray.push($yesterday.getFullYear()+"-"+($yesterday.getMonth() + 1)+"-"+$yesterday.getDate());
+        // dateArray.push($dbyesterday.getFullYear()+"-"+($dbyesterday.getMonth() + 1)+"-"+$dbyesterday.getDate());
+        debugger;
+        dashRes.forEach(function (rest) {
+          if (!mId.includes(rest._id.mName[0]))
+            mId.push(rest._id.mName[0])
+        });
+        console.log(dashRes);
+        mId.forEach(function (data) {
+          tbody += "<tr>";
+          tbody += "<td>" + data + "</td>";
+          for (j = 0; j < dateArray.length; j++) {
+            for (i = 0; i < dashRes.length; i++) {
+              if (data == dashRes[i]._id.mName[0]) {
+                var temp = dashRes[i]._id.dateTime.split('T')[0];
+                if (dateArray[j] == temp) {
+                  counter = 1;
+                  tbody += "<td>" + dashRes[i].sumtotal + "</td>";
+                  balTotal = balTotal + parseInt(dashRes[i].sumtotal);
+                }
+              }
+            }
+            if (counter == 0) {
+              tbody += "<td>0</td>";
+              balTotal = balTotal + 0;
+            }
 
-                    counter = 0;
-                };
-                tbody += "<td>" + balTotal+ "</td></tr>";
-                mainTotal=mainTotal+balTotal;
-                balTotal=0;
-            }); 
-            $('#dashTbody').html(tbody);
-            $('#mainTotal').html(mainTotal);
+            counter = 0;
+          };
+          tbody += "<td>" + balTotal + "</td></tr>";
+          mainTotal = mainTotal + balTotal;
+          balTotal = 0;
+        });
+        $('#dashThead').html(thead);
+        $('#dashTbody').html(tbody);
+        $('#mainTotal').html(mainTotal);
+        $('#dashTable').DataTable({
+          responsive: true
+        });
       }
       _dasherror = function (dasherror) {
         console.log(dasherror);

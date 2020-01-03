@@ -26,6 +26,8 @@
   <!--===============================================================================================-->
   <link rel="stylesheet" type="text/css" href="css/util.css">
   <link rel="stylesheet" type="text/css" href="css/main.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
   <!--===============================================================================================-->
 </head>
 
@@ -67,7 +69,13 @@
           <h3>All Details</h3>
         </div>
         <div class="p-l-85 p-r-85 p-t-15 p-b-15">
-          <table id="example" class="table table-striped table-bordered" style="width:100%">
+          <div class="wrap-input100 validate-input m-b-12" data-validate="Machine No is required" style="width: 20%;">
+            <select class="input100" name="Name" id="drpMachineNo" placeholder="Machine No."
+              onchange="bindalldetails();">
+            </select>
+            <span class="focus-input100"></span>
+          </div>
+          <table id="alldeTable" class="table table-striped table-bordered" style="width:100%">
             <thead>
               <tr>
                 <th>Machine No.</th>
@@ -129,8 +137,8 @@
             </tfoot>
           </table>
         </div>
-        <div class="p-r-85 p-b-10 text-right"> <button type="button" class="btn btn-info" onclick="printDiv('signup')"><i class="fa fa-print"
-              aria-hidden="true"></i>Print</button></div>
+        <div class="p-r-85 p-b-10 text-right"> <button type="button" class="btn btn-info"
+            onclick="printDiv('signup')"><i class="fa fa-print" aria-hidden="true"></i>Print</button></div>
       </div>
     </div>
   </div>
@@ -150,36 +158,18 @@
   <script src="vendor/daterangepicker/daterangepicker.js"></script>
   <!--===============================================================================================-->
   <script src="vendor/countdowntime/countdowntime.js"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
   <!--===============================================================================================-->
   <script src="js/main.js"></script>
   <script src="js/utility.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
   <script src="js/login.js"></script>
+  <script src="js/machine.js"></script>
+  
   <script>
     $(document).ready(function () {
-      
-      var mainTotal = 0;
-      var tbody = "";
-      header = { 'authorization': 'Bearer ' + getCookie('access_token') }
-      _dashsuccess = function (dashRes) {
-        for (i = 0; i < dashRes.length; i++) {
-          tbody += "<tr>";
-          tbody += "<td>" + dashRes[i].mName[0].machineName + "</td>";
-          tbody += "<td>" + dashRes[i].dateTime.split('T')[0] + "</td>";
-          tbody += "<td>" + dashRes[i].currentReading + "</td>";
-          tbody += "<td>" + dashRes[i].previousReading + "</td>";
-          tbody += "<td>" + dashRes[i].total + "</td></tr>";
-          mainTotal = mainTotal + dashRes[i].total;
-          
-        }
-        $('#dashTbody').html(tbody);
-        $('#mainTotal').html(mainTotal);
-      }
-      _dasherror = function (dasherror) {
-        console.log(dasherror);
-
-      }
-      callAjaxJsonGet('GET', '/product', '', _dashsuccess, _dasherror, false, header);
+      getmachinelist();
+      bindalldetails();
     });
     $(function () {
       $('input[name="datetime"]').daterangepicker({

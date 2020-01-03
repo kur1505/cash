@@ -17,18 +17,21 @@ exports.insert = (req, res) => {
 };
 
 exports.list = (req, res) => {
-    let limit = req.query.limit && req.query.limit <= 100 ? parseInt(req.query.limit) : 100;
-    let page = 0;
-    if (req.query) {
-        if (req.query.page) {
-            req.query.page = parseInt(req.query.page);
-            page = Number.isInteger(req.query.page) ? req.query.page : 0;
-        }
-    }
-    ProductModel.list(limit, page)
+    var machineNo = req.query.machineNo;
+    console.log(machineNo);
+    if(machineNo===null ||machineNo==="" || machineNo==="0" || machineNo==="undefined" || machineNo===undefined){
+        ProductModel.list()
         .then((result) => {
             res.status(200).send(result);
         })
+    }
+    else{
+        ProductModel.alllist(machineNo)
+        .then((result) => {
+            res.status(200).send(result);
+        });
+    }
+   
 };
 exports.listdash = (req, res) => {
     let limit = req.query.limit && req.query.limit <= 100 ? parseInt(req.query.limit) : 10;
