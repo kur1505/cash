@@ -2,12 +2,12 @@ const ProductModel = require('../models/product.model');
 const fs = require('fs');
 exports.insert = (req, res) => {
     
-    var file = req.files.ProductImage;
-    var images={imgdata: Buffer, contentType: String};
-    fs.readFile(file.path,(err,data)=>{
-        images.img=data;
-        images.contentType=file.mimetype;
-    });
+    // var file = req.files.ProductImage;
+     var images={imgdata: Buffer, contentType: String};
+    // fs.readFile(file.path,(err,data)=>{
+        // images.img=data;
+        // images.contentType=file.mimetype;
+    // });
     req.body.images=images;
     req.body.createddate = new Date();
     ProductModel.createProduct(req.body)
