@@ -147,12 +147,18 @@ function bindalldetails() {
     _dashsuccess = function (dashRes) {
         for (i = 0; i < dashRes.length; i++) {
             tbody += "<tr>";
-            tbody += "<td>" + dashRes[i].mName[0].machineName + "</td>";
-            tbody += "<td>" + dashRes[i].dateTime.split('T')[0] + "</td>";
-            tbody += "<td>" + dashRes[i].currentReading + "</td>";
-            tbody += "<td>" + dashRes[i].previousReading + "</td>";
-            tbody += "<td>" + dashRes[i].total + "</td></tr>";
-            mainTotal = mainTotal + dashRes[i].total;
+            tbody += "<td>" + dashRes[i]._id.mName[0] + "</td>";
+            tbody += "<td>" + dashRes[i].sumtotal.dateTime.split('T')[0] + "</td>";
+            tbody += "<td>" + dashRes[i].sumtotal.currentReading + "</td>";
+            tbody += "<td>" + dashRes[i].sumtotal.previousReading + "</td>";
+            tbody += "<td>" + dashRes[i].sumtotal.total + "</td></tr>";
+            if(mainTotal==0){
+                mainTotal=dashRes[i].sumtotal.total;
+            }
+            else{
+                mainTotal = mainTotal - dashRes[i].sumtotal.total;
+            }
+            
 
         }
         $('#dashTbody').html(tbody);

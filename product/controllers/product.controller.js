@@ -21,7 +21,7 @@ exports.list = (req, res) => {
     var machineNo = req.query.machineNo;
     console.log(machineNo);
     if(machineNo===null ||machineNo==="" || machineNo==="0" || machineNo==="undefined" || machineNo===undefined){
-        ProductModel.list()
+        ProductModel.listwithoumachine()
         .then((result) => {
             res.status(200).send(result);
         })

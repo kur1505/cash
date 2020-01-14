@@ -64,14 +64,43 @@ exports.list = () => {
             })
     });
 };
-exports.alllist = (machineNo) => {
+exports.listwithoumachine = () => {
     return new Promise((resolve, reject) => {
-        Product.aggregate([{$match:{'machineNo': mongoose.Types.ObjectId(machineNo)}},{ $lookup: {from: "machines",localField: "machineNo",foreignField: "_id",as: "mName"}}]).sort({ dateTime: -1 })
-            .exec(function (err, products) {
+        
+        Product.aggregate([
+        { $lookup: {from: "machines",localField: "machineNo",foreignField: "_id",as: "productObjects"}},
+        { $group: { _id: { dateTime: "$dateTime", mId: "$machineNo",mName:"$productObjects.machineName" }, sumtotal: { $last: "$$ROOT" }} }
+        ]).exec(function (err, products) {
                 if (err) {
                     reject(err);
                 } else {
+                    resolve(products);
+                }
+            })
+    });
+};
+exports.alllist = (machineNo) => {
+    // return new Promise((resolve, reject) => {
+    //     Product.aggregate([{$match:{'machineNo': mongoose.Types.ObjectId(machineNo)}},{ $lookup: {from: "machines",localField: "machineNo",foreignField: "_id",as: "mName"}}]).sort({ dateTime: -1 })
+    //         .exec(function (err, products) {
+    //             if (err) {
+    //                 reject(err);
+    //             } else {
 
+    //                 resolve(products);
+    //             }
+    //         })
+    // });
+    return new Promise((resolve, reject) => {
+        
+        Product.aggregate([
+        { $match: {'machineNo': mongoose.Types.ObjectId(machineNo)}},
+        { $lookup: {from: "machines",localField: "machineNo",foreignField: "_id",as: "productObjects"}},
+        { $group: { _id: { dateTime: "$dateTime", mId: "$machineNo",mName:"$productObjects.machineName" }, sumtotal: { $last: "$$ROOT" }} }
+        ]).exec(function (err, products) {
+                if (err) {
+                    reject(err);
+                } else {
                     resolve(products);
                 }
             })
