@@ -79,7 +79,7 @@ exports.listdash = (perPage, page) => {
         Product.aggregate([
         { $match: { dateTime: { $gt: dbYesterday } } },
         { $lookup: {from: "machines",localField: "machineNo",foreignField: "_id",as: "productObjects"}},
-        { $group: { _id: { dateTime: "$dateTime", mId: "$machineNo",mName:"$productObjects.machineName" }, sumtotal: { $sum: "$total" }} }
+        { $group: { _id: { dateTime: "$dateTime", mId: "$machineNo",mName:"$productObjects.machineName" }, sumtotal: "$total" } }
         ]).limit(perPage)
             .skip(perPage * page).sort({ mId: 1 })
             .exec(function (err, products) {
