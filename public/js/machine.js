@@ -1,7 +1,15 @@
-function getPrevReading() {
+function getPrevReading(dt) {
     header = { 'authorization': 'Bearer ' + getCookie('access_token') }
     var machineNo = $('#drpMachineNo').val();
-    if (!!machineNo) {
+    var dateof;
+    if(!!dt){
+        dateof=dt;
+    }
+    else{
+        dateof = $('#txtdate').val()
+    }
+   
+    if (!!machineNo && !!dateof) {
         _success = function (result) {
             if (result.length != 0) {
                 $('#txtprevreading').val(result[0].currentReading);
@@ -14,10 +22,10 @@ function getPrevReading() {
         _error = function (err) {
             Swal.fire('Success!', 'Please try Again', 'info');
         }
-        callAjaxJsonGet('GET', '/productbymachineNo', { 'machineNo': machineNo }, _success, _error, false, header);
+        callAjaxJsonGet('GET', '/productbymachineNo', { 'machineNo': machineNo,'dateof':dateof+" 08:00:00 AM" }, _success, _error, false, header);
     }
     else {
-        Swal.fire('Error!', 'Please Select Machine', 'error');
+        Swal.fire('Error!', 'Please Select Machine And Date', 'error');
     }
 }
 function Addreading() {
@@ -36,12 +44,12 @@ function Addreading() {
         console.log(error);
 
     }
-    var st = $('#txtdate').val().split('-');
+    var st = $('#txtdate').val();
     var req = new FormData();
 
     req.append('machineNo', $('#drpMachineNo').val());
-    req.append('dateTime', st[1] + " 08:00:00 AM");
-    req.append('fromdate', st[0] + " 08:00:00 AM");
+    req.append('dateTime', st + " 08:00:00 AM");
+    // req.append('fromdate', st[0] + " 08:00:00 AM");
     req.append('currentReading', $('#txtcurrentreading').val());
     req.append('previousReading', $('#txtprevreading').val());
     req.append('total', $('#txttotalbalance').val());

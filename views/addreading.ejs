@@ -27,7 +27,7 @@
     <link rel="stylesheet" type="text/css" href="css/util.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    
+
     <!--===============================================================================================-->
 </head>
 
@@ -67,6 +67,7 @@
                     <span class="login100-form-title p-b-32">
                         Add Reading
                     </span>
+
                     <div class="wrap-input100 validate-input m-b-12" data-validate="Machine No is required">
                         <select class="input100" name="Name" id="drpMachineNo" placeholder="Machine No."
                             onchange="getPrevReading();">
@@ -74,12 +75,10 @@
                         </select>
                         <span class="focus-input100"></span>
                     </div>
-
                     <div class="wrap-input100 validate-input m-b-12" data-validate="Datetime is required">
                         <input class="input100" type="text" id="txtdate" name="datetime" placeholder="Datetime">
                         <span class="focus-input100"></span>
                     </div>
-
                     <div class="wrap-input100 validate-input m-b-12" data-validate="Current Reading is required">
                         <input class="input100" type="text" pattern="[0-9]" id="txtcurrentreading" name="CurrentReading"
                             placeholder="Current Reading">
@@ -146,7 +145,7 @@
     <script src="vendor/countdowntime/countdowntime.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <!--===============================================================================================-->
     <script src="js/main.js"></script>
     <script src="js/utility.js"></script>
@@ -159,9 +158,13 @@
         $(function () {
             $('input[name="datetime"]').daterangepicker({
                 showDropdowns: true,
+                singleDatePicker: true,
                 locale: {
                     format: 'MM/DD/YYYY'
                 }
+            }, function (start, end, label) {
+               
+                getPrevReading(moment(start._d).format('MM/DD/YYYY'));
             });
             $('#txtcurrentreading').keyup(function () {
                 if (!!$('#drpMachineNo').val()) {
@@ -170,8 +173,8 @@
                     $('#txttotalbalance').val(fT);
                 }
                 else {
-                    this.value=null;
-                    swal.fire('Information',"Please select Machine",'info');
+                    this.value = null;
+                    swal.fire('Information', "Please select Machine", 'info');
                     return false;
                 }
 
@@ -183,8 +186,8 @@
                     $('#txttotalbalance').val(fT);
                 }
                 else {
-                    this.value=null;
-                    swal.fire('Information',"Please Enter Current Reading",'info');
+                    this.value = null;
+                    swal.fire('Information', "Please Enter Current Reading", 'info');
                     return false;
                 }
 

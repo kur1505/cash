@@ -1,5 +1,6 @@
 const ProductModel = require('../models/product.model');
 const fs = require('fs');
+const moment=require('moment');
 exports.insert = (req, res) => {
     
     // var file = req.files.ProductImage;
@@ -56,7 +57,9 @@ exports.getById = (req, res) => {
 };
 exports.getByMachineNo = (req, res) => {
     var machineNo = req.query.machineNo;
-    ProductModel.findBymachineNo(machineNo)
+    var dateof =moment(new Date(req.query.dateof)).format("YYYY-MM-DD");
+    console.log(machineNo);
+    ProductModel.findBymachineNo(machineNo,dateof)
         .then((result) => {
             res.status(200).send(result);
         });

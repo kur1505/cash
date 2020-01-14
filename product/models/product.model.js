@@ -1,6 +1,7 @@
 const mongoose = require('../../common/services/mongoose.service').mongoose;
 const Schema = mongoose.Schema;
 const MachineModel = require('../../machine/models/machine.model');
+const moment=require('moment');
 const productSchema = new Schema({
     machineNo: { type:  mongoose.Schema.ObjectId, required: true },
     dateTime: Date,
@@ -29,8 +30,13 @@ productSchema.findById = function (cb) {
 const Product = mongoose.model('Products', productSchema);
 
 
-exports.findBymachineNo = (machineNo) => {
-    return Product.find({ machineNo: machineNo }).sort({ _id: -1 }).limit(1);
+exports.findBymachineNo = (machineNo,dateof) => {
+    // return Product.find(&&{ dateTime: {$eq:dateof}}).sort({ _id: -1 }).limit(1);
+    // {$match: { $and: [{machineNo: machineNo }, { creationDate:  {$eq: dateof} }] }
+    return Product.aggregate([{
+        $addFields: { "creationDate":  {$dateToString:{format: "%Y-%m-%d", date: "$dateTime"}}}},
+        {$match: { $and: [{machineNo: mongoose.Types.ObjectId(machineNo) }, { creationDate:  {$eq: dateof} }] }
+    }]).sort({ _id: -1 }).limit(1);
 };
 exports.findById = (id) => {
     return Product.findById(id)
@@ -79,9 +85,9 @@ exports.listdash = (perPage, page) => {
         Product.aggregate([
         { $match: { dateTime: { $gt: dbYesterday } } },
         { $lookup: {from: "machines",localField: "machineNo",foreignField: "_id",as: "productObjects"}},
-        { $group: { _id: { dateTime: "$dateTime", mId: "$machineNo",mName:"$productObjects.machineName" }, sumtotal: "$total" } }
+        { $group: { _id: { dateTime: "$dateTime", mId: "$machineNo",mName:"$productObjects.machineName" }, sumtotal: { $last: "$total" }} }
         ]).limit(perPage)
-            .skip(perPage * page).sort({ mId: 1 })
+            .skip(perPage * page).sort({ mId: -1 })
             .exec(function (err, products) {
                 if (err) {
                     reject(err);

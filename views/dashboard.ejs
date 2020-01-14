@@ -197,13 +197,19 @@
                 if (dateArray[j] == temp) {
                   counter = 1;
                   tbody += "<td>" + dashRes[i].sumtotal + "</td>";
-                  balTotal = balTotal + parseInt(dashRes[i].sumtotal);
+                  if(balTotal==0){
+                    balTotal= parseInt(dashRes[i].sumtotal)
+                  }
+                  else{
+                    balTotal = balTotal - parseInt(dashRes[i].sumtotal);
+                  }
+                 
                 }
               }
             }
             if (counter == 0) {
               tbody += "<td>0</td>";
-              balTotal = balTotal + 0;
+              balTotal = balTotal - 0;
             }
 
             counter = 0;
