@@ -26,7 +26,7 @@
     "git": "^0.1.5",
     "jsonwebtoken": "^7.4.3",
     "moment": "^2.17.1",
-    "moment-timezone": "^0.5.13",
+    "moment-timezone": "^0.5.35",
     "mongoose": "^5.1.1",
     "node-uuid": "^1.4.8",
     "nodemon": "^1.19.3",
